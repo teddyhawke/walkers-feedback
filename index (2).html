@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1a">
+<title>Walkers Feedback</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one question per screen, phone-first, same night-desert world as the Give page. Single dark theme by choice. */
+:root {
+  --night: #0b0f1a;
+  --night-2: #141a2a;
+  --sand: #ece3d2;
+  --dust: #9a9fb0;
+  --sodium: #f4a63a;
+  --rule: #262d40;
+  --display: "Big Shoulders Display", "Arial Narrow", "Impact", sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+html { background: var(--night); }
+body {
+  background: var(--night); color: var(--sand); font-family: var(--body);
+  font-size: 17px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+}
+.sky {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1px 1px at 12% 18%, #ffffff55 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 9%,  #ffffff44 50%, transparent 51%),
+    radial-gradient(1px 1px at 63% 27%, #ffffff33 50%, transparent 51%),
+    radial-gradient(1px 1px at 33% 6%,  #ffffff40 50%, transparent 51%),
+    radial-gradient(120% 45% at 50% 108%, #f4a63a2e 0%, #f4a63a0d 45%, transparent 70%);
+}
+.wrap {
+  position: relative; z-index: 1; max-width: 480px; margin: 0 auto; box-sizing: border-box;
+  min-height: 100vh; min-height: 100svh;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  padding-top: calc(28px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 28px;
+}
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mark {
+  font-family: var(--display); font-weight: 900; font-size: 26px; letter-spacing: 0.04em;
+  text-transform: uppercase; text-decoration: line-through; text-decoration-thickness: 2px;
+}
+.count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; color: var(--dust); }
+.bar { height: 3px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--sodium); transition: width .35s ease; }
+
+.step { display: flex; flex-direction: column; gap: 22px; animation: in .35s cubic-bezier(.2,.7,.2,1); }
+@keyframes in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .step { animation: none; } .bar > i { transition: none; } }
+
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sodium); margin: 0; }
+h1, h2 {
+  font-family: var(--display); font-weight: 900; text-transform: uppercase; margin: 0;
+  line-height: 0.92; letter-spacing: 0.01em; text-wrap: balance;
+}
+h1 { font-size: clamp(56px, 18vw, 84px); }
+h2 { font-size: clamp(38px, 11vw, 52px); }
+.lede { margin: 0; color: var(--dust); max-width: 36ch; }
+
+.choices { display: flex; flex-direction: column; gap: 10px; }
+.choice {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 58px; padding: 14px 18px; box-sizing: border-box;
+  background: var(--night-2); color: var(--sand); border: 1px solid var(--rule); border-radius: 6px;
+  font: 600 18px/1.25 var(--body); text-align: left; cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.choice:hover { border-color: var(--sodium); }
+.choice:focus-visible, .btn:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--sodium); outline-offset: 2px; }
+.choice[aria-pressed="true"] { background: var(--sodium); border-color: var(--sodium); color: var(--night); }
+.choice .k { font-family: var(--mono); font-size: 12px; color: var(--dust); }
+.choice[aria-pressed="true"] .k { color: #3a2a12; }
+
+.scale { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.scale .choice { justify-content: center; font: 800 28px/1 var(--display); min-height: 72px; padding: 0; }
+.scale-labels { display: flex; justify-content: space-between; font-size: 13px; color: var(--dust); margin-top: -12px; }
+
+textarea, input[type="email"], input[type="text"] {
+  width: 100%; box-sizing: border-box; background: var(--night-2); color: var(--sand);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; font: 400 17px/1.45 var(--body);
+}
+textarea { min-height: 140px; resize: vertical; }
+textarea::placeholder, input::placeholder { color: #6c7286; }
+label.check { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; cursor: pointer; }
+label.check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--sodium); flex: none; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > span { font-size: 14px; color: var(--dust); }
+
+.nav { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 54px;
+  padding: 0 22px; border-radius: 6px; border: 1px solid var(--sodium); cursor: pointer; text-decoration: none;
+  font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: 0.03em;
+  background: var(--sodium); color: var(--night);
+}
+.btn.ghost { background: transparent; color: var(--dust); border-color: var(--rule); font: 600 15px/1 var(--body); text-transform: none; letter-spacing: 0; }
+.btn.grow { flex: 1; }
+.btn.alt { background: transparent; color: var(--sand); border-color: var(--sand); }
+.btn.alt:hover { border-color: var(--sodium); color: var(--sodium); }
+.btn[disabled] { opacity: .4; cursor: default; }
+.err { color: #ff8a7a; font-size: 14px; margin: 0; }
+
+footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #6c7286; }
+</style>
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true"></div>
+<main class="wrap">
+  <div class="top">
+    <span class="mark" aria-label="Walkers">Walkers</span>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <section id="stage" aria-live="polite"></section>
+  <footer>Objects in mirror are closer than they appear</footer>
+</main>
+
+<script>
+/* ===== Settings: fill these in once the Google Form exists ===== */
+const FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScH2sCd3PIldTFcNiB4dQRDPf_TNk-vqh6FSulgHhreHEwPOQ/formResponse";
+const ENTRY = {
+  rating:     "entry.197925836",
+  tone:       "entry.1230035286",
+  moment:     "entry.56214353",
+  confusing:  "entry.114441945",
+  series:     "entry.1998685998",
+  other:      "entry.1150389379"
+};
+const GIVE_URL = "https://teddyhawke.github.io/walkers-give/";
+const NEWS_URL = "https://walkers-shortfilm.beehiiv.com/?modal=signup";
+/* =============================================================== */
+
+const answers = {};
+const steps = [
+  { type: "intro" },
+  { key: "rating", type: "scale", eyebrow: "01", title: "How’d you like it?", lo: "Not for me", hi: "Loved it" },
+  { key: "tone", type: "choice", eyebrow: "02", title: "Scary vs. funny?", options: ["Wanted more scares", "The balance was right", "Wanted more laughs"] },
+  { key: "moment", type: "text", eyebrow: "03", title: "What moment stuck with you?", placeholder: "A scene, a line, a look…" },
+  { key: "confusing", type: "text", eyebrow: "04", title: "Anything confusing, or pull you out?", placeholder: "Story, pacing, anything at all" },
+  { key: "series", type: "choice", eyebrow: "05", title: "Would you watch a skinwalker anthology series?", sub: "Think Black Mirror: a new skinwalker encounter, with new characters, every episode.", options: ["Yes", "Maybe", "No"] },
+  { key: "other", type: "text", eyebrow: "06", title: "Anything else?", placeholder: "Remember: VFX, sound, color, and score are still temp.", last: true },
+  { type: "thanks" }
+];
+const QUESTIONS = steps.filter(s => s.eyebrow && /^\d/.test(s.eyebrow)).length + 1;
+let i = 0;
+const stage = document.getElementById("stage");
+const bar = document.getElementById("bar");
+const count = document.getElementById("count");
+
+function el(tag, attrs = {}, ...kids) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  for (const c of kids) if (c != null) n.append(c.nodeType ? c : document.createTextNode(c));
+  return n;
+}
+function go(n) { i = n; render(); window.scrollTo({ top: 0 }); }
+function next() { go(i + 1); }
+function back() { go(Math.max(1, i - 1)); }
+function nav(canSkip, label = "Next") {
+  const b = el("button", { class: "btn grow", type: "button", onclick: next }, label);
+  const kids = [el("button", { class: "btn ghost", type: "button", onclick: back }, "Back"), b];
+  if (canSkip) kids.push(el("button", { class: "btn ghost", type: "button", onclick: next }, "Skip"));
+  return el("div", { class: "nav" }, ...kids);
+}
+
+function render() {
+  const s = steps[i];
+  const qIndex = i;
+  const pct = Math.round((i / (steps.length - 1)) * 100);
+  bar.style.width = pct + "%";
+  count.textContent = (i > 0 && i < steps.length - 1) ? (qIndex + " / " + (steps.length - 2)) : "";
+  stage.replaceChildren();
+  const box = el("div", { class: "step" });
+
+  if (s.type === "intro") {
+    box.append(
+      el("p", { class: "eyebrow" }, "Advance screening feedback"),
+      el("h1", {}, "What did you think?"),
+      el("p", { class: "lede" }, "Takes about a minute. The film isn’t finished yet, so what you tell us can shape how it ends up."),
+      el("div", { class: "nav" }, el("button", { class: "btn grow", type: "button", onclick: next }, "Start →"))
+    );
+  }
+
+  if (s.type === "scale") {
+    const row = el("div", { class: "scale", role: "group", "aria-label": s.title });
+    for (let v = 1; v <= 5; v++) {
+      row.append(el("button", {
+        class: "choice", type: "button", "aria-pressed": String(answers[s.key] === String(v)),
+        onclick: () => { answers[s.key] = String(v); render(); setTimeout(next, 220); }
+      }, String(v)));
+    }
+    box.append(el("p", { class: "eyebrow" }, s.eyebrow), el("h2", {}, s.title), row,
+      el("div", { class: "scale-labels" }, el("span", {}, s.lo), el("span", {}, s.hi)), nav(true));
+  }
+
+  if (s.type === "choice") {
+    const list = el("div", { class: "choices", role: "group", "aria-label": s.title });
+    s.options.forEach((o, n) => list.append(el("button", {
+      class: "choice", type: "button", "aria-pressed": String(answers[s.key] === o),
+      onclick: () => { answers[s.key] = o; render(); setTimeout(next, 220); }
+    }, el("span", {}, o), el("span", { class: "k" }, String.fromCharCode(65 + n)))));
+    box.append(...[el("p", { class: "eyebrow" }, s.eyebrow), el("h2", {}, s.title), s.sub ? el("p", { class: "lede" }, s.sub) : null, list, nav(true)].filter(Boolean));
+  }
+
+  if (s.type === "text") {
+    const id = "f-" + s.key;
+    const ta = el("textarea", { id, placeholder: s.placeholder, "aria-label": s.title });
+    ta.value = answers[s.key] || "";
+    ta.addEventListener("input", () => { answers[s.key] = ta.value; });
+    let actions = nav(true);
+    if (s.last) {
+      const send = el("button", { class: "btn grow", type: "button", onclick: async () => {
+        send.disabled = true; send.textContent = "Sending…";
+        await submit(); next();
+      } }, "Send feedback");
+      actions = el("div", { class: "nav" }, el("button", { class: "btn ghost", type: "button", onclick: back }, "Back"), send);
+    }
+    box.append(...[el("p", { class: "eyebrow" }, s.eyebrow), el("h2", {}, s.title), ta,
+      s.last ? el("p", { class: "lede" }, "Your answers are anonymous.") : null, actions].filter(Boolean));
+  }
+
+  if (s.type === "contact") {
+    const name = el("input", { id: "f-name", type: "text", autocomplete: "name", placeholder: "Your name" });
+    const email = el("input", { id: "f-email", type: "email", autocomplete: "email", inputmode: "email", placeholder: "you@email.com" });
+    const cb = el("input", { id: "f-news", type: "checkbox" });
+    name.value = answers.name || ""; email.value = answers.email || ""; cb.checked = answers.newsletter === "Yes";
+    name.addEventListener("input", () => answers.name = name.value);
+    email.addEventListener("input", () => { answers.email = email.value; if (email.value && !cb.checked) { cb.checked = true; answers.newsletter = "Yes"; } });
+    cb.addEventListener("change", () => answers.newsletter = cb.checked ? "Yes" : "");
+    const err = el("p", { class: "err", hidden: "" });
+    const send = el("button", { class: "btn grow", type: "button", onclick: async () => {
+      if (answers.newsletter === "Yes" && !/^\S+@\S+\.\S+$/.test(answers.email || "")) {
+        err.textContent = "Add an email so we can send you updates, or untick the box."; err.hidden = false; return;
+      }
+      send.disabled = true; send.textContent = "Sending…";
+      await submit(); next();
+    } }, "Send feedback");
+    box.append(
+      el("p", { class: "eyebrow" }, s.eyebrow), el("h2", {}, s.title),
+      el("p", { class: "lede" }, "Optional. Leave it blank to stay anonymous."),
+      el("label", { class: "field", for: "f-name" }, el("span", {}, "Name"), name),
+      el("label", { class: "field", for: "f-email" }, el("span", {}, "Email"), email),
+      el("label", { class: "check", for: "f-news" }, cb, el("span", {}, "Add me to the Walkers newsletter")),
+      err,
+      el("div", { class: "nav" }, el("button", { class: "btn ghost", type: "button", onclick: back }, "Back"), send)
+    );
+  }
+
+  if (s.type === "thanks") {
+    bar.style.width = "100%";
+    box.append(
+      el("p", { class: "eyebrow" }, "Got it"),
+      el("h1", {}, "Thank you."),
+      el("p", { class: "lede" }, "Every answer goes straight to the team finishing the film. Want to help us get there, or follow along?"),
+      el("div", { class: "choices" },
+        el("a", { class: "btn", href: GIVE_URL, target: "_blank", rel: "noopener" }, "Bid & Donate →"),
+        el("a", { class: "btn alt", href: NEWS_URL, target: "_blank", rel: "noopener" }, "Join the newsletter →"))
+    );
+  }
+
+  stage.append(box);
+  const first = box.querySelector("textarea, input");
+  if (first && window.matchMedia("(pointer: fine)").matches) first.focus();
+}
+
+async function submit() {
+  if (FORM_ACTION.includes("FORM_ID")) { console.log("Demo mode, not sent:", answers); return; }
+  const body = new URLSearchParams();
+  for (const [k, entry] of Object.entries(ENTRY)) if (answers[k]) body.append(entry, answers[k]);
+  try {
+    await fetch(FORM_ACTION, { method: "POST", mode: "no-cors", body });
+  } catch (e) { console.warn("Feedback send failed", e); }
+}
+
+render();
+</script>
+
+</body>
+</html>
